@@ -39,7 +39,6 @@ habit-tracker/
 │   ├── models.py
 │   └── schemas.py
 ├── tests/
-├── .env.example
 ├── alembic.ini
 ├── docker-compose.yml
 ├── Dockerfile
@@ -85,6 +84,12 @@ curl http://localhost:8000/health
 make down
 ```
 
+если нужно остановить проект и удалить данные базы, юзаем:
+
+```bash
+make down-clean
+```
+
 ## запуск без Docker
 
 ### 1. установить зависимости
@@ -122,8 +127,10 @@ uvicorn app.main:app --reload
 ```bash
 make up           # поднять postgres и api
 make down         # остановить контейнеры
+make down-clean   # остановить контейнеры и удалить данные
 make logs         # посмотреть логи
 make ps           # посмотреть статус контейнеров
+make up-db        # поднять только postgres
 make test         # запустить pytest локально
 make test-docker  # запустить pytest в docker
 make migrate      # применить миграции
@@ -195,11 +202,13 @@ curl http://localhost:8000/api/v1/habits/aggregated-stats
 
 ### тесты
 
+сначала поднимаем postgresql:
+
 ```bash
-pytest
+make up-db
 ```
 
-или:
+потом запускаем тесты:
 
 ```bash
 make test

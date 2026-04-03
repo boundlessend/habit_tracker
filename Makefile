@@ -2,6 +2,9 @@ up:
 	docker compose up --build
 
 down:
+	docker compose down
+
+down-clean:
 	docker compose down -v
 
 logs:
@@ -10,11 +13,17 @@ logs:
 ps:
 	docker compose ps
 
+up-db:
+	docker compose up -d db
+
 test:
-	pytest
+	TEST_DATABASE_URL=$${TEST_DATABASE_URL:-postgresql+psycopg://postgres:postgres@localhost:5432/habit_tracker_test} pytest
 
 test-docker:
-	docker compose run --rm api pytest
+	docker compose up -d db
+	docker compose run --rm \
+		-e TEST_DATABASE_URL=postgresql+psycopg://postgres:postgres@db:5432/habit_tracker_test \
+		api pytest
 
 migrate:
 	alembic upgrade head
